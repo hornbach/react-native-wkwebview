@@ -694,26 +694,4 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
   RCTLogWarn(@"Webview Process Terminated");
 }
 
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
-  if (_onNavigationResponse) {
-    NSDictionary *headers = @{};
-    NSInteger statusCode = 200;
-    if([navigationResponse.response isKindOfClass:[NSHTTPURLResponse class]]){
-        headers = ((NSHTTPURLResponse *)navigationResponse.response).allHeaderFields;
-        statusCode = ((NSHTTPURLResponse *)navigationResponse.response).statusCode;
-    }
-
-    NSMutableDictionary<NSString *, id> *event = [self baseEvent];
-    [event addEntriesFromDictionary:@{
-                                      @"headers": headers,
-                                      @"status": [NSHTTPURLResponse localizedStringForStatusCode:statusCode],
-                                      @"statusCode": @(statusCode),
-                                      }];
-    _onNavigationResponse(event);
-  }
-
-  decisionHandler(WKNavigationResponsePolicyAllow);
-}
-
-
 @end
